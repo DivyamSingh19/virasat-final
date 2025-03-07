@@ -5,22 +5,29 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -b",
-    "run": "tsc -b && node dist/server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.4.1",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
+    "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "typescript": "^5.8.2"
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "nodemon": "^3.1.9",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "razorpay": "^2.9.6",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "prisma": "^6.4.1"
