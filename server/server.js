@@ -17,6 +17,7 @@ connectCloudinary();
 
 app.use('/api/user',userRouter)
 app.use('/api/forum',forumRouter)
+app.use("/api/comments", commentRoutes);
 
 
 

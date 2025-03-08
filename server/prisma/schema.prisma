@@ -18,6 +18,7 @@ model Student {
 
   posts      Post[]  
   forums     Forum[]  
+  comments   Comment[]
 }
 
 model Alumni {
@@ -30,7 +31,8 @@ model Alumni {
 
   posts     Post[]  
   forums    Forum[]  
-  jobs      Job[]    // Alumni can post multiple jobs
+  jobs      Job[]    
+  comments  Comment[]
 }
 
 model Admin {
@@ -44,13 +46,14 @@ model Admin {
   posts     Post[]  
   forums    Forum[]  
   events    Event[]  
+  comments  Comment[]
 }
 
 model Post {
   id            String   @id @default(uuid()) 
   title         String   
   description   String   
-  featuredImage String   // Cloudinary URL
+  featuredImage String   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -61,13 +64,15 @@ model Post {
   student       Student? @relation(fields: [studentId], references: [id])
   alumni        Alumni?  @relation(fields: [alumniId], references: [id])
   admin         Admin?   @relation(fields: [adminId], references: [id])
+
+  comments      Comment[]
 }
 
 model Forum {
   id            String   @id @default(uuid()) 
   title         String   
   content       String  
-  featuredImage String   // Cloudinary URL
+  featuredImage String   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -78,6 +83,8 @@ model Forum {
   student       Student? @relation(fields: [studentId], references: [id])
   alumni        Alumni?  @relation(fields: [alumniId], references: [id])
   admin         Admin?   @relation(fields: [adminId], references: [id])
+
+  comments      Comment[]
 }
 
 model Event {
@@ -106,4 +113,25 @@ model Job {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  content     String  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  postId      String?  
+  forumId     String?  
+
+  studentId   String?  
+  alumniId    String?  
+  adminId     String?  
+
+  post        Post?    @relation(fields: [postId], references: [id])
+  forum       Forum?   @relation(fields: [forumId], references: [id])
+
+  student     Student? @relation(fields: [studentId], references: [id])
+  alumni      Alumni?  @relation(fields: [alumniId], references: [id])
+  admin       Admin?   @relation(fields: [adminId], references: [id])
 }
