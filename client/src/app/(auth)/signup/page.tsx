@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import axios from "axios"
 import { GraduationCap, Users, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -12,7 +13,37 @@ export default function SignupPage() {
   const [userType, setUserType] = useState("student")
   const [step, setStep] = useState(1);
   const router = useRouter();
-  
+  const [error,setError] = useState("")
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
+  const [graduationYear,setGraduationYear] = useState("")
+  const [prn_number,setPrn_number] = useState("")
+  const [username,setUserName] = useState("")
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:4000/api/user/register", {
+        username, email, password, fullName, graduationYear, prn_number
+      });
+      localStorage.setItem("token", res.data.token);
+      router.push("/profile");
+      // toast.success("Account created successfully!")
+    } catch (error) {
+      if (error instanceof Error) {
+         
+        setError(error.message);
+      } else if (typeof error === 'object' && error !== null && 'response' in error) {
+        
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        setError(axiosError.response?.data?.error || 'Login failed');
+      } else {
+         
+        setError('Login failed');
+      }
+    }
+  };
+
   const handleNext = () => {
     setStep(2)
     // In a real app, you would navigate to onboarding page
@@ -102,12 +133,12 @@ export default function SignupPage() {
 function OnboardingForm({ userType }: { userType: string }) {
   return (
     <div className="space-y-4">
-      <form className="space-y-4">
+      <form onSubmit={handleSignup}className="space-y-4">
         <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium">
                 Name
             </label>
-            <Input id="name" placeholder="John Doe" className="" required />
+            <Input id="name" placeholder="John Doe" value={name}  onChange={(e) => setName(e.target.value)} className="" required />
         </div>
         
         <div className="space-y-2">
