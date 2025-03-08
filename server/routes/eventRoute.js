@@ -1,13 +1,9 @@
-import express from "express"
-import { loginUser, registerUser, loginAlumni, registerAlumni, adminLogin } from "../controllers/userController.js"
+import express from 'express';
+import { createEvent, registerForEvent } from '../controllers/eventController.js';
 
-const eventRouter = express.Router()
+const eventRouter = express.Router();
 
-eventRouter.post('/login-user',loginUser)
-eventRouter.post('/admin',adminLogin)
-eventRouter.post('/register-user',registerUser)
-eventRouter.post('/login-alumni',loginAlumni)
-eventRouter.post('/register-alumni',registerAlumni)
-
+eventRouter.post('/create', createEvent);
+eventRouter.post('/register', registerForEvent);
 
 export default eventRouter;

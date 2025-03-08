@@ -17,71 +17,70 @@ enum Branch {
   BACHELOR_OF_FINE_ART
 }
 
-model Student {
-  id             String       @id @default(uuid())
-  username       String       @unique
-  email          String       @unique
-  password       String
-  prn_number     String
-  branch         Branch
-  graduationYear Int          // Stores the expected year of graduation
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  bio            String?      @db.VarChar(600) // Bio with max 600 characters
-  githubProfile  String?      // GitHub profile link
-  linkedinProfile String?     // LinkedIn profile link
-  phoneNumber    String?      @unique // Phone number (optional but unique)
-  
-  skills         String[]     @db.VarChar(5)  // Max 5 skills
-  interests      String[]     @db.VarChar(5)  // Max 5 interests
-
-  degree         Degree       // Enum (BE, ME)
-
-  posts          Post[]
-  forums         Forum[]
-  comments       Comment[]
-  sentChats      Chat[]       @relation("StudentSenderChats")
-  receivedChats  Chat[]       @relation("StudentReceiverChats")
-  experiences    Experience[] // Back-relation to Experience
-}
-
 enum Degree {
   BE
   ME
 }
 
+model Student {
+  id             String       @id @default(uuid())
+  username       String       @unique
+  email          String       @unique
+  fullName       String
+  password       String
+  prn_number     String
+  branch         Branch
+  graduationYear Int          // Expected graduation year
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  bio            String?      @db.VarChar(600) // Max 600 characters
+  githubProfile  String?
+  linkedinProfile String?
+  phoneNumber    String?      @unique
+  
+  skills         String[]     @db.VarChar(5)
+  interests      String[]     @db.VarChar(5)
+  
+  degree         Degree       
+  
+  posts          Post[]
+  forums         Forum[]
+  comments       Comment[]
+  sentChats      Chat[]       @relation("StudentSenderChats")
+  receivedChats  Chat[]       @relation("StudentReceiverChats")
+  experiences    Experience[]
+}
 
 model Alumni {
   id              String       @id @default(uuid())
   username        String       @unique
   email           String       @unique
+  fullName        String
   password        String
   branch          Branch
   graduationYear  Int
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  bio             String?      @db.VarChar(600) // Bio with max 600 characters
-  githubProfile   String?      // GitHub profile link
-  linkedinProfile String?      // LinkedIn profile link
-  phoneNumber     String?      @unique // Phone number (optional but unique)
+  bio             String?      @db.VarChar(600)
+  githubProfile   String?
+  linkedinProfile String?
+  phoneNumber     String?      @unique
   
-  skills          String[]     @db.VarChar(5)  // Max 5 skills
-  interests       String[]     @db.VarChar(5)  // Max 5 interests
-
-  degree          Degree       // Enum (BE, ME)
-
+  skills          String[]     @db.VarChar(5)
+  interests       String[]     @db.VarChar(5)
+  
+  degree          Degree       
+  
   posts           Post[]
-  forums          Forum[]
+  forums         Forum[]
   jobs            Job[]
   comments        Comment[]
   sentChats       Chat[]       @relation("AlumniSenderChats")
   receivedChats   Chat[]       @relation("AlumniReceiverChats")
-  experiences     Experience[] // Back-relation to Experience
+  experiences     Experience[]
 }
-
- 
 
 model Admin {
   id        String   @id @default(uuid())
@@ -95,6 +94,22 @@ model Admin {
   forums    Forum[]
   events    Event[]
   comments  Comment[]
+}
+
+model Event {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  featuredImage String
+  date          DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  isPaid        Boolean   @default(false)
+  price         Float?    // Required if isPaid is true
+
+  adminId       String
+  admin         Admin    @relation(fields: [adminId], references: [id])
 }
 
 model Post {
@@ -134,18 +149,7 @@ model Forum {
 
   comments      Comment[]
 }
-
-model Event {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  date        DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  adminId     String
-  admin       Admin    @relation(fields: [adminId], references: [id])
-}
+ 
 
 model Job {
   id          String   @id @default(uuid())
