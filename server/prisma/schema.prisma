@@ -15,35 +15,36 @@ enum Branch {
   HUMANITIES_BASIC_SCIENCES
   BACHELOR_OF_FINE_ART
 }
-
 model Student {
-  id         String   @id @default(uuid()) 
-  username   String   @unique
-  email      String   @unique
-  password   String
-  prn_number String
-  branch     Branch  
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id             String   @id @default(uuid()) 
+  username       String   @unique
+  email          String   @unique
+  password       String
+  prn_number     String
+  branch         Branch  
+  graduationYear Int      // Stores the expected year of graduation
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  posts      Post[]  
-  forums     Forum[]  
-  comments   Comment[]
+  posts         Post[]  
+  forums        Forum[]  
+  comments      Comment[]
 }
 
 model Alumni {
-  id        String   @id @default(uuid()) 
-  username  String   @unique
-  email     String   @unique
-  password  String
-  branch    Branch  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String   @id @default(uuid()) 
+  username       String   @unique
+  email          String   @unique
+  password       String
+  branch         Branch  
+  graduationYear Int       
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  posts     Post[]  
-  forums    Forum[]  
-  jobs      Job[]    
-  comments  Comment[]
+  posts         Post[]  
+  forums        Forum[]  
+  jobs          Job[]    
+  comments      Comment[]
 }
 model Admin {
   id        String   @id @default(uuid()) 
