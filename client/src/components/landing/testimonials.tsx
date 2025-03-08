@@ -26,34 +26,7 @@ const Testimonials = () => {
   return (
     <div className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="order-2 md:order-1">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 rounded-2xl p-6 aspect-square flex items-center justify-center">
-                <Lightbulb className="w-16 h-16 text-blue-500" />
-              </div>
-              <div className="bg-blue-50 rounded-2xl p-6 aspect-square flex items-center justify-center">
-                <Telescope className="w-16 h-16 text-blue-500" />
-              </div>
-              
-            </div>
-          </div>
-          
-          <div className="space-y-8 order-1 md:order-2">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900">
-              Real Stories, Real Impact
-            </h2>
-            <p className="text-gray-600 text-lg">
-              We provide the tools, resources, and community support needed to
-              turn innovative ideas into reality. Join us in shaping the
-              future of technology and leadership.
-            </p>
-            <button className="flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
-              Learn More <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
+        <h1 className='text-center font-bold text-5xl'>Our Testimonials</h1>
         <div className="mt-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (

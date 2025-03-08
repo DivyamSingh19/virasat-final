@@ -1,9 +1,16 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
+import AlumniCard from "@/components/landing/alumni-card";
+import EventCard from "@/components/landing/event-card";
 import JobCard from "@/components/landing/job-card";
+import { PartnerSlider } from "@/components/landing/partnerSlider";
 import Testimonials from "@/components/landing/testimonials";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   ArrowRight,
   CircleArrowRight,
@@ -15,7 +22,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="bg-secondary">
       {/* Header */}
       <Header />
 
@@ -32,7 +39,11 @@ export default function Home() {
                 Building lifelong connections through a seamless alumni
                 networking experience.
               </p>
-              <Button size="lg" className="rounded-full w-44 p-6 hover:shadow-md" asChild>
+              <Button
+                size="lg"
+                className="rounded-full w-44 p-6 hover:shadow-md"
+                asChild
+              >
                 <Link
                   href="/login"
                   className="flex items-center justify-center gap-2"
@@ -55,7 +66,10 @@ export default function Home() {
 
           <div className="">
             <div className="grid grid-cols-8 grid-rows-4 gap-4 p-4 -mt-56">
-              <Link href="#" className="col-span-2 row-span-4 bg-background/30 backdrop-blur-lg p-4 text-xl font-medium rounded-xl border border-white/20 hover:bg-background/40">
+              <Link
+                href="#"
+                className="col-span-2 row-span-4 bg-background/30 backdrop-blur-lg p-4 text-xl font-medium rounded-xl border border-white/20 hover:bg-background/40"
+              >
                 One-on-One Mentorship with Alumni
                 <Image src="/mask.png" alt="" width="500" height="500" />
               </Link>
@@ -72,7 +86,10 @@ export default function Home() {
                   className="absolute bottom-0 right-0"
                 />
               </Link>
-              <Link href="#" className="relative bg-background/30 backdrop-blur-lg p-4 text-xl col-span-2 row-span-2 col-start-3 font-medium row-start-3 rounded-xl border border-white/20 hover:bg-background/40">
+              <Link
+                href="#"
+                className="relative bg-background/30 backdrop-blur-lg p-4 text-xl col-span-2 row-span-2 col-start-3 font-medium row-start-3 rounded-xl border border-white/20 hover:bg-background/40"
+              >
                 Engage in Meaningful Discussions
                 <Image
                   src="/forums.png"
@@ -82,7 +99,10 @@ export default function Home() {
                   className="absolute bottom-0 right-0"
                 />
               </Link>
-              <Link href="#events" className="relative bg-background/30 backdrop-blur-lg p-4 text-xl col-span-2 row-span-2 col-start-5 font-medium row-start-3 rounded-xl border border-white/20 hover:bg-background/40">
+              <Link
+                href="#events"
+                className="relative bg-background/30 backdrop-blur-lg p-4 text-xl col-span-2 row-span-2 col-start-5 font-medium row-start-3 rounded-xl border border-white/20 hover:bg-background/40"
+              >
                 Live Events & Webinars
                 <Image
                   src="/live-events.png"
@@ -97,8 +117,87 @@ export default function Home() {
         </Container>
       </section>
 
+      {/* MOUs */}
+      <PartnerSlider />
+
+      {/* Search Alumni Section */}
+      <section id="search-alumni" className="mb-20">
+        <Container>
+          <h1 className="font-bold text-center text-5xl mt-10 mb-14">Find your Mentors</h1>
+          <div>
+            <div className="flex gap-6">
+              <Input type="search" placeholder="Search Alumni" />
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Company" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="apple">Apple</SelectItem>
+                    <SelectItem value="banana">Banana</SelectItem>
+                    <SelectItem value="blueberry">Blueberry</SelectItem>
+                    <SelectItem value="grapes">Grapes</SelectItem>
+                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Skills" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="apple">Apple</SelectItem>
+                    <SelectItem value="banana">Banana</SelectItem>
+                    <SelectItem value="blueberry">Blueberry</SelectItem>
+                    <SelectItem value="grapes">Grapes</SelectItem>
+                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Alumni Card */}
+            <div className="grid grid-cols-2 gap-x-10 gap-y-6 my-6">
+              <AlumniCard 
+                name="Satyam Bhosale"
+                role="UI/UX Designer"
+                company="Apple"
+                exp="1"
+                image="/alumni/boi1.jpg"
+                prevComp="/alumni/alumni1company.png"
+              />
+              <AlumniCard 
+                name="Mitesh Kamthe"
+                role="Cybersecurity Expert"
+                company="Google"
+                exp="2"
+                image="/alumni/boi2.jpg"
+                prevComp="/alumni/alumni2company.png"
+              />
+              <AlumniCard 
+                name="Aditya Sharma"
+                role="Software Engineer"
+                company="Microsoft"
+                exp="3"
+                image="/alumni/boi3.jpg"
+                prevComp="/alumni/alumni3company.png"
+              />
+              <AlumniCard 
+                name="Divyam Singh"
+                role="Backend Developer"
+                company="Amazon"
+                exp="1"
+                image="/alumni/boi4.jpg"
+                prevComp="/alumni/alumni4company.png"
+              />
+            </div>
+          </div>
+        </Container>
+      </section>
+
       {/* Jobs Section */}
-      <section id="jobs" className="px-6 py-24 bg-white">
+      <section id="jobs" className="px-6 py-24 bg-secondary">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-8">
@@ -137,51 +236,45 @@ export default function Home() {
                 company="Innovation Hub"
                 type="Remote"
               />
-              <Link
-                href="/jobs"
-                className="bg-[#448aff]/10 rounded-2xl p-6 flex items-center justify-center hover:bg-[#448aff]/15 transition-colors"
-              >
-                <div className="text-lg font-semibold text-[#448aff] flex items-center gap-2">
-                  View More Opportunities <ArrowRight className="w-5 h-5" />
-                </div>
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Events Section */}
-      <section id="events" className="px-6 py-24 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl md:text-5xl font-bold">
-                Upcoming Events
-              </h2>
-              <p className="text-gray-600 text-lg">
-                We provide the tools, resources, and community support needed to
-                turn innovative ideas into reality. Join us in shaping the
-                future of technology and leadership.
-              </p>
-              <button className="flex items-center gap-2 bg-[#448aff] text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
-                Learn More <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-[#448aff]/5 rounded-2xl p-6 aspect-square flex items-center justify-center">
-                <Lightbulb className="w-16 h-16 text-[#448aff]" />
-              </div>
-              <div className="bg-[#448aff]/5 rounded-2xl p-6 aspect-square flex items-center justify-center">
-                <Telescope className="w-16 h-16 text-[#448aff]" />
-              </div>
-              <div className="bg-[#448aff]/10 rounded-2xl p-6 aspect-square flex items-center justify-center col-span-2">
-                <div className="text-2xl font-bold text-[#448aff]">
-                  Innovation Hub
-                </div>
-              </div>
+      {/* Upcoming Events */}
+      <section id="search-alumni" className="mb-20">
+        <Container>
+          <h1 className="font-bold text-center text-5xl mt-10 mb-14">Upcoming Events</h1>
+          <div>
+            {/* Events Card */}
+            <div className="grid grid-cols-2 gap-x-10 gap-y-6 my-6">
+              <EventCard 
+                name="Mind Matters A Guide to Stress Free Life"
+                date="March 05, 2024"
+                type="Career Guidance / Placement Guidance"
+                image="/events/event1.jpg"
+              />
+              <EventCard 
+                name="Hr-Meet 2024 (Meet with a Purpose)"
+                date="February 21, 2024"
+                type="Career Guidance / Placement Guidance"
+                image="/events/event2.jpg"
+              />
+              <EventCard 
+                name="How to leverage LinkedIn for Professional Careers and Success"
+                date="8 February 2024"
+                type="Career Guidance / Placement Guidance"
+                image="/events/event3.jpg"
+              />
+              <EventCard 
+                name="Mind Matters A Guide to Stress Free Life"
+                date="6 February 2024"
+                type="Career Guidance / Placement Guidance"
+                image="/events/event4.jpg"
+              />
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       {/* Testimonials */}
