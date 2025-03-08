@@ -31,57 +31,48 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-       
-      const { username, email, password, fullName, graduationYear, prn_number } = req.body;
-  
-      
-      const match = await prisma.studentData.findFirst({
-        where: {
-          fullName: fullName,
-          graduationYear: Number(graduationYear),
-          prn_number: prn_number,
-        },
-      });
-  
-      if (!match) {
-        return res.json({
-          success: false,
-          message: "Student verification failed. The provided details do not match our records.",
+        const { username, email, password, prn_number, graduationYear } = req.body;
+
+        // Ensure all fields are provided
+        if (!username || !email || !password || !prn_number || !graduationYear ) {
+            return res.json({ success: false, message: "All fields are required" });
+        }
+
+        // Step 1: Check if the student's data exists in StudentData
+        const studentData = await prisma.studentData.findUnique({
+            where: { prn_number }
         });
-      }
-  
- 
-      const exists = await prisma.user.findUnique({ where: { email } });
-      if (exists) {
-        return res.json({ success: false, message: "User already exists" });
-      }
-  
- 
-      if (!validator.isEmail(email)) {
-        return res.json({ success: false, message: "Please enter a valid email" });
-      }
-  
-   
-      if (password.length < 8) {
-        return res.json({ success: false, message: "Please enter a strong password (at least 8 characters)" });
-      }
-  
-       
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
- 
-      const user = await prisma.user.create({
-        data: { username, email, password: hashedPassword },
-      });
-  
-       
-      const token = createToken(user.id);
-      res.json({ success: true, token });
+
+        if (!studentData || studentData.graduationYear !== graduationYear) {
+            return res.json({ success: false, message: "Invalid student data. Registration denied." });
+        }
+
+        // Step 2: Check if the student already exists
+        const existingStudent = await prisma.student.findUnique({ where: { email } });
+
+        if (existingStudent) {
+            return res.json({ success: false, message: "Student already exists" });
+        }
+
+        // Step 3: Create the student record
+        const student = await prisma.student.create({
+            data: {
+                username,
+                email,
+                password,
+                prn_number,
+                graduationYear,
+                 
+            }
+        });
+
+        return res.json({ success: true, message: "Student registered successfully", student });
+
     } catch (error) {
-      console.error(error);
-      res.json({ success: false, message: error.message || "An unknown error occurred" });
+        console.error(error);
+        res.json({ success: false, message: "An error occurred during registration" });
     }
-  };
+};
 
 const loginAlumni = async (req, res) => {
     try {

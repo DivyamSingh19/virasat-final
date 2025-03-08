@@ -28,6 +28,16 @@ model Student {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
+  bio            String?      @db.VarChar(600) // Bio with max 600 characters
+  githubProfile  String?      // GitHub profile link
+  linkedinProfile String?     // LinkedIn profile link
+  phoneNumber    String?      @unique // Phone number (optional but unique)
+  
+  skills         String[]     @db.VarChar(5)  // Max 5 skills
+  interests      String[]     @db.VarChar(5)  // Max 5 interests
+
+  degree         Degree       // Enum (BE, ME)
+
   posts          Post[]
   forums         Forum[]
   comments       Comment[]
@@ -36,24 +46,42 @@ model Student {
   experiences    Experience[] // Back-relation to Experience
 }
 
-model Alumni {
-  id             String       @id @default(uuid())
-  username       String       @unique
-  email          String       @unique
-  password       String
-  branch         Branch
-  graduationYear Int
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  posts          Post[]
-  forums         Forum[]
-  jobs           Job[]
-  comments       Comment[]
-  sentChats      Chat[]       @relation("AlumniSenderChats")
-  receivedChats  Chat[]       @relation("AlumniReceiverChats")
-  experiences    Experience[] // Back-relation to Experience
+enum Degree {
+  BE
+  ME
 }
+
+
+model Alumni {
+  id              String       @id @default(uuid())
+  username        String       @unique
+  email           String       @unique
+  password        String
+  branch          Branch
+  graduationYear  Int
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  bio             String?      @db.VarChar(600) // Bio with max 600 characters
+  githubProfile   String?      // GitHub profile link
+  linkedinProfile String?      // LinkedIn profile link
+  phoneNumber     String?      @unique // Phone number (optional but unique)
+  
+  skills          String[]     @db.VarChar(5)  // Max 5 skills
+  interests       String[]     @db.VarChar(5)  // Max 5 interests
+
+  degree          Degree       // Enum (BE, ME)
+
+  posts           Post[]
+  forums          Forum[]
+  jobs            Job[]
+  comments        Comment[]
+  sentChats       Chat[]       @relation("AlumniSenderChats")
+  receivedChats   Chat[]       @relation("AlumniReceiverChats")
+  experiences     Experience[] // Back-relation to Experience
+}
+
+ 
 
 model Admin {
   id        String   @id @default(uuid())
@@ -201,3 +229,4 @@ model Experience {
   studentId   String?
   student     Student? @relation(fields: [studentId], references: [id])
 }
+ 
