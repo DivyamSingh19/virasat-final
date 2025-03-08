@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -28,30 +29,20 @@ export default function AdminLogin() {
         email,
         password,
       });
-      if(res.status === 200){
-        localStorage.setItem("token", res.data.token);
+      if (res.status === 200) {
+        localStorage.setItem("authToken", res.data.token); // Fix: Ensure it's "authToken"
+        toast("Login success");
         router.push("/dashboard");
-        console.log("Successful logged in");
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-        setError(error.message);
-      } 
-      else if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error
-      ) {
-        const axiosError = error as {
-          response?: { data?: { error?: string } };
-        };
-        setError(axiosError.response?.data?.error || "Login failed");
+      if (axios.isAxiosError(error) && error.response) {
+        setError(error.response.data?.error || "Invalid credentials");
       } else {
         setError("Login failed");
       }
     }
   };
+  
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -100,16 +91,9 @@ export default function AdminLogin() {
                   <Button type="submit" className="w-full">
                     Login
                   </Button>
-                  {/* <Button variant="outline" className="w-full">
-                Login with Google
-                </Button> */}
+                
                 </div>
-                <div className="mt-4 text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/signup" className="underline underline-offset-4">
-                    Sign up
-                  </Link>
-                </div>
+                 
               </form>
             </CardContent>
           </Card>

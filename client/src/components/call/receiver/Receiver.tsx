@@ -8,23 +8,34 @@ export const Receiver = () => {
         const socket = new WebSocket('ws://localhost:8080');
 
         socket.onopen = () => {
+            console.log("WebSocket connected");
             socket.send(JSON.stringify({ type: 'receiver' }));
         };
 
         const pc = new RTCPeerConnection();
 
+        pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.send(JSON.stringify({
+                    type: 'iceCandidate',
+                    candidate: event.candidate
+                }));
+            }
+        };
+
         pc.ontrack = (event) => {
-            console.log(event);
+            console.log("Track received:", event);
             if (videoRef.current) {
-                videoRef.current.srcObject = new MediaStream([event.track]);
+                videoRef.current.srcObject = event.streams[0];
             }
         };
 
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
+            console.log("Received message:", message);
             
             if (message.type === 'createOffer') {
-                pc.setRemoteDescription(message.sdp).then(() => {
+                pc.setRemoteDescription(new RTCSessionDescription(message.sdp)).then(() => {
                     pc.createAnswer().then((answer) => {
                         pc.setLocalDescription(answer);
                         socket.send(JSON.stringify({
@@ -34,7 +45,7 @@ export const Receiver = () => {
                     });
                 });
             } else if (message.type === 'iceCandidate') {
-                pc.addIceCandidate(message.candidate);
+                pc.addIceCandidate(new RTCIceCandidate(message.candidate));
             }
         };
 
@@ -44,16 +55,9 @@ export const Receiver = () => {
         };
     }, []);
 
-    const handlePlay = () => {
-        if (videoRef.current) {
-            videoRef.current.play().catch((err) => console.error("Autoplay blocked:", err));
-        }
-    };
-
     return (
         <div>
-            <video ref={videoRef} autoPlay muted onClick={handlePlay} />
-            <p>Click the video if autoplay doesn&apos;t work.</p>
+            <video ref={videoRef} autoPlay playsInline controls width="640" height="480" />
         </div>
     );
 };
