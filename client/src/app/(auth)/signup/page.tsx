@@ -6,10 +6,12 @@ import { GraduationCap, Users, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useRouter } from "next/navigation"
 
 export default function SignupPage() {
   const [userType, setUserType] = useState("student")
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(1);
+  const router = useRouter();
   
   const handleNext = () => {
     setStep(2)
@@ -18,7 +20,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="w-full max-w-xs">
+    <div className="w-full max-w-[25rem]">
       <div className="space-y-1 mb-4">
         <h1 className="text-2xl font-bold">Create an account</h1>
         <h2 className="">
@@ -105,36 +107,36 @@ function OnboardingForm({ userType }: { userType: string }) {
             <label htmlFor="name" className="text-sm font-medium">
                 Name
             </label>
-            <Input id="name" placeholder="John Doe" className="" />
+            <Input id="name" placeholder="John Doe" className="" required />
         </div>
         
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-medium">
             Email
           </label>
-          <Input id="email" type="email" placeholder="you@example.com" className="" />
+          <Input id="email" type="email" placeholder="you@example.com" className="" required />
         </div>
         
         <div className="space-y-2">
           <label htmlFor="password" className="text-sm font-medium">
             Password
           </label>
-          <Input id="password" type="password" placeholder="Create a password" className="" />
+          <Input id="password" type="password" placeholder="Create a password" className="" required />
         </div>
         
         {userType === "student" ? (
           <div className="space-y-2">
             <label htmlFor="studentId" className="text-sm font-medium">
-              Student ID
+              PRN No.
             </label>
-            <Input id="studentId" placeholder="e.g., S12345" className="" />
+            <Input id="studentId" placeholder="e.g., S12345" className="" required />
           </div>
         ) : (
           <div className="space-y-2">
             <label htmlFor="graduationYear" className="text-sm font-medium">
               Graduation Year
             </label>
-            <Input id="graduationYear" type="number" placeholder="e.g., 2020" className="" />
+            <Input id="graduationYear" type="number" placeholder="e.g., 2020" className="" required />
           </div>
         )}
         

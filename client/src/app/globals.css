@@ -4,11 +4,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.22 0.02 262.1);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.02 262.1);
+  /* --card-foreground: oklch(0.22 0.02 262.1); */
+  --card-foreground: oklch(0.21 0.06 272.4);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.02 262.1);
   --primary: oklch(0.57 0.19 257.0);
