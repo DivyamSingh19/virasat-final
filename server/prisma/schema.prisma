@@ -159,13 +159,25 @@ model Chat {
   message             String   // Encrypted message
   createdAt           DateTime @default(now())
 
-  senderStudentId     String?  // Sender is a Student
-  receiverAlumniId    String?  // Receiver is an Alumni
-  senderAlumniId      String?  // Sender is an Alumni
-  receiverStudentId   String?  // Receiver is a Student
+  senderStudentId     String?   
+  receiverAlumniId    String?  
+  senderAlumniId      String?   
+  receiverStudentId   String?  
 
   senderStudent       Student? @relation("StudentSenderChats", fields: [senderStudentId], references: [id])
   receiverAlumni      Alumni?  @relation("AlumniReceiverChats", fields: [receiverAlumniId], references: [id])
   senderAlumni        Alumni?  @relation("AlumniSenderChats", fields: [senderAlumniId], references: [id])
   receiverStudent     Student? @relation("StudentReceiverChats", fields: [receiverStudentId], references: [id])
+}
+model StudentData {
+  id             String   @id @default(uuid())
+  fullName       String
+  graduationYear Int
+  prn_number     String
+}
+
+model AlumniData {
+  id             String   @id @default(uuid())
+  fullName       String
+  graduationYear Int
 }
