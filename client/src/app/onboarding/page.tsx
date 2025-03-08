@@ -81,7 +81,7 @@ export default function OnboardingPage() {
     }
   }, [searchParams]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -98,7 +98,7 @@ export default function OnboardingPage() {
     setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log("Submitting data:", formData);
     // In a real app, you would submit this data to your backend
