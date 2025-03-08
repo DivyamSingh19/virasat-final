@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 enum Branch {
   COMPUTER_ENGINEERING
   INFORMATION_TECHNOLOGY
@@ -15,62 +16,68 @@ enum Branch {
   HUMANITIES_BASIC_SCIENCES
   BACHELOR_OF_FINE_ART
 }
+
 model Student {
-  id             String   @id @default(uuid()) 
+  id             String   @id @default(uuid())
   username       String   @unique
   email          String   @unique
   password       String
   prn_number     String
-  branch         Branch  
+  branch         Branch
   graduationYear Int      // Stores the expected year of graduation
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  posts         Post[]  
-  forums        Forum[]  
-  comments      Comment[]
+  posts          Post[]
+  forums         Forum[]
+  comments       Comment[]
+  sentChats      Chat[]   @relation("StudentSenderChats")
+  receivedChats  Chat[]   @relation("StudentReceiverChats")
 }
 
 model Alumni {
-  id             String   @id @default(uuid()) 
+  id             String   @id @default(uuid())
   username       String   @unique
   email          String   @unique
   password       String
-  branch         Branch  
-  graduationYear Int       
+  branch         Branch
+  graduationYear Int
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  posts         Post[]  
-  forums        Forum[]  
-  jobs          Job[]    
-  comments      Comment[]
+  posts          Post[]
+  forums         Forum[]
+  jobs           Job[]
+  comments       Comment[]
+  sentChats      Chat[]   @relation("AlumniSenderChats")
+  receivedChats  Chat[]   @relation("AlumniReceiverChats")
 }
+
 model Admin {
-  id        String   @id @default(uuid()) 
+  id        String   @id @default(uuid())
   username  String   @unique
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts     Post[]  
-  forums    Forum[]  
-  events    Event[]  
+  posts     Post[]
+  forums    Forum[]
+  events    Event[]
   comments  Comment[]
 }
 
 model Post {
-  id            String   @id @default(uuid()) 
-  title         String   
-  description   String   
-  featuredImage String   
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  featuredImage String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  studentId     String?  
-  alumniId      String?  
-  adminId       String?  
+  studentId     String?
+  alumniId      String?
+  adminId       String?
 
   student       Student? @relation(fields: [studentId], references: [id])
   alumni        Alumni?  @relation(fields: [alumniId], references: [id])
@@ -80,16 +87,16 @@ model Post {
 }
 
 model Forum {
-  id            String   @id @default(uuid()) 
-  title         String   
-  content       String  
-  featuredImage String   
+  id            String   @id @default(uuid())
+  title         String
+  content       String
+  featuredImage String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  studentId     String?  
-  alumniId      String?  
-  adminId       String?  
+  studentId     String?
+  alumniId      String?
+  adminId       String?
 
   student       Student? @relation(fields: [studentId], references: [id])
   alumni        Alumni?  @relation(fields: [alumniId], references: [id])
@@ -99,14 +106,14 @@ model Forum {
 }
 
 model Event {
-  id          String   @id @default(uuid()) 
-  title       String   
-  description String  
-  date        DateTime 
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  date        DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  adminId     String  
+  adminId     String
   admin       Admin    @relation(fields: [adminId], references: [id])
 }
 
@@ -117,10 +124,10 @@ model Job {
   company     String
   location    String
   salary      String
-  expired     Boolean  @default(false) 
+  expired     Boolean  @default(false)
 
-  postedById  String  
-  postedBy    Alumni  @relation(fields: [postedById], references: [id])
+  postedById  String
+  postedBy    Alumni   @relation(fields: [postedById], references: [id])
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -128,16 +135,16 @@ model Job {
 
 model Comment {
   id          String   @id @default(uuid())
-  content     String  
+  content     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  postId      String?  
-  forumId     String?  
+  postId      String?
+  forumId     String?
 
-  studentId   String?  
-  alumniId    String?  
-  adminId     String?  
+  studentId   String?
+  alumniId    String?
+  adminId     String?
 
   post        Post?    @relation(fields: [postId], references: [id])
   forum       Forum?   @relation(fields: [forumId], references: [id])
@@ -145,4 +152,20 @@ model Comment {
   student     Student? @relation(fields: [studentId], references: [id])
   alumni      Alumni?  @relation(fields: [alumniId], references: [id])
   admin       Admin?   @relation(fields: [adminId], references: [id])
+}
+
+model Chat {
+  id                  String   @id @default(uuid())
+  message             String   // Encrypted message
+  createdAt           DateTime @default(now())
+
+  senderStudentId     String?  // Sender is a Student
+  receiverAlumniId    String?  // Receiver is an Alumni
+  senderAlumniId      String?  // Sender is an Alumni
+  receiverStudentId   String?  // Receiver is a Student
+
+  senderStudent       Student? @relation("StudentSenderChats", fields: [senderStudentId], references: [id])
+  receiverAlumni      Alumni?  @relation("AlumniReceiverChats", fields: [receiverAlumniId], references: [id])
+  senderAlumni        Alumni?  @relation("AlumniSenderChats", fields: [senderAlumniId], references: [id])
+  receiverStudent     Student? @relation("StudentReceiverChats", fields: [receiverStudentId], references: [id])
 }
