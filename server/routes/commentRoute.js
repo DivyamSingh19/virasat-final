@@ -7,7 +7,7 @@ const commentRouter = express.Router();
 commentRouter.post("/", protect, createComment);
 commentRouter.get("/:postId", getCommentsByPost);
 commentRouter.put("/:id", protect, updateComment);
-commentRouter.delete("/:id", protect, deleteComment); // Admin OR owner can delete
+commentRouter.delete("/:id", protect, deleteComment); 
 
 export default commentRouter;
  

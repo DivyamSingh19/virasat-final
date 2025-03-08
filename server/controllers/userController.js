@@ -31,29 +31,57 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        const exists = await prisma.user.findUnique({ where: { email } });
-        if (exists) {
-            return res.json({ success: false, message: "User already exists" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Please enter a valid email" });
-        }
-        if (password.length < 8) {
-            return res.json({ success: false, message: "Please enter a strong password" });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await prisma.user.create({
-            data: { username, email, password: hashedPassword },
+       
+      const { username, email, password, fullName, graduationYear, prn_number } = req.body;
+  
+      
+      const match = await prisma.studentData.findFirst({
+        where: {
+          fullName: fullName,
+          graduationYear: Number(graduationYear),
+          prn_number: prn_number,
+        },
+      });
+  
+      if (!match) {
+        return res.json({
+          success: false,
+          message: "Student verification failed. The provided details do not match our records.",
         });
-        const token = createToken(user.id);
-        res.json({ success: true, token });
+      }
+  
+ 
+      const exists = await prisma.user.findUnique({ where: { email } });
+      if (exists) {
+        return res.json({ success: false, message: "User already exists" });
+      }
+  
+ 
+      if (!validator.isEmail(email)) {
+        return res.json({ success: false, message: "Please enter a valid email" });
+      }
+  
+   
+      if (password.length < 8) {
+        return res.json({ success: false, message: "Please enter a strong password (at least 8 characters)" });
+      }
+  
+       
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+ 
+      const user = await prisma.user.create({
+        data: { username, email, password: hashedPassword },
+      });
+  
+       
+      const token = createToken(user.id);
+      res.json({ success: true, token });
     } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message || "An unknown error occurred" });
+      console.error(error);
+      res.json({ success: false, message: error.message || "An unknown error occurred" });
     }
-};
+  };
 
 const loginAlumni = async (req, res) => {
     try {
@@ -77,29 +105,62 @@ const loginAlumni = async (req, res) => {
 
 const registerAlumni = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        const exists = await prisma.alumni.findUnique({ where: { email } });
-        if (exists) {
-            return res.json({ success: false, message: "Alumni already exists" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.json({ success: false, message: "Please enter a valid email" });
-        }
-        if (password.length < 8) {
-            return res.json({ success: false, message: "Please enter a strong password" });
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const alumni = await prisma.alumni.create({
-            data: { username, email, password: hashedPassword },
+       
+      const { username, email, fullName, graduationYear, password } = req.body;
+  
+       
+      const match = await prisma.alumniData.findFirst({
+        where: {
+          fullName: fullName,
+          graduationYear: Number(graduationYear),
+        },
+      });
+  
+      if (!match) {
+        return res.json({
+          success: false,
+          message: "Alumni information could not be verified. Please contact support.",
         });
-        const token = createToken(alumni.id);
-        res.json({ success: true, token });
+      }
+  
+       
+      const exists = await prisma.alumni.findUnique({ where: { email } });
+      if (exists) {
+        return res.json({ success: false, message: "Alumni already exists" });
+      }
+  
+      
+      if (!validator.isEmail(email)) {
+        return res.json({ success: false, message: "Please enter a valid email" });
+      }
+  
+      
+      if (password.length < 8) {
+        return res.json({
+          success: false,
+          message: "Please enter a strong password (at least 8 characters)",
+        });
+      }
+  
+       
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+       
+      const alumni = await prisma.alumni.create({
+        data: { username, email, password: hashedPassword },
+      });
+  
+      
+      const token = createToken(alumni.id);
+      res.json({ success: true, token });
     } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message || "An unknown error occurred" });
+      console.error(error);
+      res.json({
+        success: false,
+        message: error.message || "An unknown error occurred",
+      });
     }
-};
+  };
 
 const adminLogin = async (req, res) => {
     try {

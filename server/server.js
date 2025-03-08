@@ -5,6 +5,7 @@ import cors from "cors"
 import userRouter from "./routes/userRoute.js";
 import forumRouter from "./routes/forumRoute.js";
 import commentRouter from "./routes/commentRoute.js";
+import dataUploadRouter from "./routes/dataUploadRoute.js";
 const app = express();
 const port = 4000;
 app.use(express.json());
@@ -18,17 +19,7 @@ connectCloudinary();
 app.use('/api/user',userRouter)
 app.use('/api/forum',forumRouter)
 app.use("/api/comments", commentRouter);
-
-
-
-
-
-
-
-
-
-
-
+app.use("/api/dataupload",dataUploadRouter)
 
 app.get('/',(req,res)=>{
   res.json({"message":"It works"}) //trial
