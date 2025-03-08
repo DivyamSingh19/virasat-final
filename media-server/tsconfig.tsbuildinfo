@@ -1,1 +1,1 @@
-{"root":["./src/server.ts","./src/streaming/ffmpeg.ts","./src/streaming/hlsserver.ts","./src/webrtc/peerhandler.ts","./src/webrtc/signalling.ts","./src/webrtc/stunturn.ts","./src/websocket/chatserver.ts"],"version":"5.7.3"}
+{"root":["./src/server.ts","./src/streaming/ffmpeg.ts","./src/streaming/hlsserver.ts","./src/webrtc/signaling.ts","./src/websocket/chatserver.ts"],"version":"5.7.3"}
