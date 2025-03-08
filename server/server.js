@@ -4,7 +4,7 @@ import express from "express"
 import cors from "cors"
 import userRouter from "./routes/userRoute.js";
 import forumRouter from "./routes/forumRoute.js";
- 
+import commentRouter from "./routes/commentRoute.js";
 const app = express();
 const port = 4000;
 app.use(express.json());
@@ -17,7 +17,7 @@ connectCloudinary();
 
 app.use('/api/user',userRouter)
 app.use('/api/forum',forumRouter)
-app.use("/api/comments", commentRoutes);
+app.use("/api/comments", commentRouter);
 
 
 

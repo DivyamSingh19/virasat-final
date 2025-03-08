@@ -128,4 +128,4 @@ const adminLogin = async (req, res) => {
 
 
 
-export { loginUser, registerUser, loginAlumni, registerAlumni, adminLogin, registerAdmin };
+export { loginUser, registerUser, loginAlumni, registerAlumni, adminLogin };

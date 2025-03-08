@@ -1,5 +1,5 @@
 import express from "express"
-import { loginUser, registerUser, loginAlumni, registerAlumni, adminLogin } from "../controllers/userController"
+import { loginUser, registerUser, loginAlumni, registerAlumni, adminLogin } from "../controllers/userController.js"
 
 const userRouter = express.Router()
 
