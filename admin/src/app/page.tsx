@@ -11,18 +11,10 @@ export default function Home() {
         <p className="text-gray-600 mt-2">Manage your application efficiently.</p>
 
         <div className="mt-6 flex space-x-4">
-          <a href="/admin/dashboard" className="px-6 py-2 bg-blue-600 text-white rounded-lg">
+          <a href="/dashboard" className="px-6 py-2 bg-blue-600 text-white rounded-lg">
             Go to Dashboard
           </a>
-          <button
-            onClick={() => {
-              localStorage.removeItem("authToken");
-              window.location.href = "/login";
-            }}
-            className="px-6 py-2 bg-red-600 text-white rounded-lg"
-          >
-            Logout
-          </button>
+          
         </div>
       </div>
         </div>

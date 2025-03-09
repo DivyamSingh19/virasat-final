@@ -21,36 +21,87 @@ enum Degree {
   BE
   ME
 }
-
-model Student {
-  id             String       @id @default(uuid())
-  username       String       @unique
-  email          String       @unique
-  fullName       String
-  password       String
-  prn_number     String
-  branch         Branch
-  graduationYear Int          // Expected graduation year
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-
-  bio            String?      @db.VarChar(600) // Max 600 characters
-  githubProfile  String?
-  linkedinProfile String?
-  phoneNumber    String?      @unique
+// ChatUser - references either a Student or Alumni
+model ChatUser {
+  id               String         @id @default(uuid())
+  studentId        String?        @unique
+  alumniId         String?        @unique
+  streamUserId     String         @unique // Store the ID used in Stream.io
+  student          Student?       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  alumni           Alumni?        @relation(fields: [alumniId], references: [id], onDelete: Cascade)
   
-  skills         String[]     @db.VarChar(5)
-  interests      String[]     @db.VarChar(5)
   
-  degree         Degree       
+  channelMemberships ChannelMember[]
   
-  posts          Post[]
-  forums         Forum[]
-  comments       Comment[]
  
-  experiences    Experience[]
+  createdChannels    ChatChannel[]  @relation("ChannelCreator")
+  
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  
 }
 
+// ChatChannel model
+model ChatChannel {
+  id             String          @id @default(uuid())
+  channelId      String          @unique // Stream's channel ID
+  channelType    String          // e.g., "messaging", "team", etc.
+  name           String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  creatorId      String
+  creator        ChatUser        @relation("ChannelCreator", fields: [creatorId], references: [id])
+  members        ChannelMember[]
+
+  @@index([creatorId])
+}
+
+model ChannelMember {
+  id          String         @id @default(uuid())
+  userId      String
+  channelId   String
+  joinedAt    DateTime       @default(now())
+  role        String         @default("member") // Could be "admin", "member", etc.
+  
+  user        ChatUser       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel     ChatChannel    @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, channelId])
+  @@index([userId])
+  @@index([channelId])
+}
+
+ 
+model Student {
+  id              String       @id @default(uuid())
+  username        String       @unique
+  email           String       @unique
+  fullName        String
+  password        String
+  prn_number      String
+  branch          Branch
+  graduationYear  Int          // Expected graduation year
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  bio             String?      @db.VarChar(600) // Max 600 characters
+  githubProfile   String?
+  linkedinProfile String?
+  phoneNumber     String?      @unique
+  skills          String[]     @db.VarChar(5)
+  interests       String[]     @db.VarChar(5)  
+  degree          Degree
+  
+  posts           Post[]
+  forums          Forum[]
+  comments        Comment[]  
+  experiences     Experience[]
+  
+   
+  chatUser        ChatUser?
+}
+
+ 
 model Alumni {
   id              String       @id @default(uuid())
   username        String       @unique
@@ -61,23 +112,22 @@ model Alumni {
   graduationYear  Int
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
-
   bio             String?      @db.VarChar(600)
   githubProfile   String?
   linkedinProfile String?
   phoneNumber     String?      @unique
-  
   skills          String[]     @db.VarChar(5)
-  interests       String[]     @db.VarChar(5)
-  
-  degree          Degree       
+  interests       String[]     @db.VarChar(5)  
+  degree          Degree?
   
   posts           Post[]
-  forums         Forum[]
+  forums          Forum[]
   jobs            Job[]
-  comments        Comment[]
-   
+  comments        Comment[]  
   experiences     Experience[]
+  
+   
+  chatUser        ChatUser?
 }
 
 model Admin {

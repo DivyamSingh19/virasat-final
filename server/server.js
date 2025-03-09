@@ -28,9 +28,12 @@ app.get('/',(req,res)=>{
 })
 
 //Global Catch
-const errorHandler = (err, req, res, next) => {
-  console.error('Error:', err);
+app.use((err, req, res, next) => {
+  if (err.name === 'MulterError') {
+    return res.status(400).json({ error: `File upload error: ${err.message}` });
+  }
+  res.status(500).json({ error: err.message || 'Something went wrong' });
+});
 
-  res.status(500).json({ error: 'Something went wrong!' });
-};
+
 app.listen(port)

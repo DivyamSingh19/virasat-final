@@ -37,40 +37,44 @@ const ManageUsers: React.FC = () => {
 //     fetchUsers();
 //   }, []);
 
-  // Handle CSV file upload
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    type: "students" | "alumni"
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+const handleFileUpload = async (
+  event: React.ChangeEvent<HTMLInputElement>,
+  type: "students" | "alumni"
+) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
+  const formData = new FormData();
+  formData.append("file", file);
 
-    // Set API endpoint based on type
-    const endpoint =
-      type === "students"
-        ? "http://localhost:4000/api/dataupload/upload-student-csv"
-        : "http://localhost:4000/api/dataupload/upload-alumni-csv";
+  const endpoint =
+    type === "students"
+      ? "http://localhost:4000/api/dataupload/upload-student-csv"
+      : "http://localhost:4000/api/dataupload/upload-alumni-csv";
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        body: formData,
-      });
+  try {
+    console.log(`Uploading ${type} CSV to ${endpoint}`); // Debugging
 
-      if (!response.ok) {
-        throw new Error(`Failed to upload ${type} CSV`);
-      }
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: formData,
+    });
 
-      alert(`${type} CSV uploaded successfully`);
-      event.target.value = ""; // Reset file input after upload
-    } catch (error) {
-      console.error(`Error uploading ${type} CSV:`, error);
-      alert(`Error uploading ${type} CSV. Please try again.`);
+    const result = await response.json(); // Parse response
+    console.log("Server Response:", result); // Log response
+
+    if (!response.ok) {
+      throw new Error(result.message || `Failed to upload ${type} CSV`);
     }
-  };
+
+    alert(`${type} CSV uploaded successfully`);
+    event.target.value = ""; // Reset file input after upload
+  } catch (error) {
+    console.error(`Error uploading ${type} CSV:`, error);
+    alert(`Error uploading ${type} CSV. Please try again.`);
+  }
+};
+
 
   return (
     <div className="p-4">

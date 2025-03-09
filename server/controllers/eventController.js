@@ -1,88 +1,194 @@
-import { PrismaClient } from '@prisma/client';
-import Razorpay from 'razorpay';
- 
-import { v2 as cloudinary } from 'cloudinary';
+// controllers/eventController.js
+const prisma = require('../prisma/client');
+const cloudinary = require('cloudinary').v2;
 
-const prisma = new PrismaClient();
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
- 
+// Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
- 
-export const createEvent = async (req, res) => {
+// Helper function to upload image to Cloudinary
+const uploadImage = async (imageFile) => {
+  try {
+    const result = await cloudinary.uploader.upload(imageFile, {
+      folder: 'events',
+      use_filename: true,
+      unique_filename: true,
+    });
+    return result.secure_url;
+  } catch (error) {
+    throw new Error(`Error uploading image: ${error.message}`);
+  }
+};
+
+// Get all events
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await prisma.event.findMany({
+      include: {
+        admin: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to fetch events: ${error.message}` });
+  }
+};
+
+// Get a single event by ID
+exports.getEventById = async (req, res) => {
+  try {
+    const event = await prisma.event.findUnique({
+      where: {
+        id: req.params.id
+      },
+      include: {
+        admin: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
+    
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to fetch event: ${error.message}` });
+  }
+};
+
+// Create a new event
+exports.createEvent = async (req, res) => {
   try {
     const { title, description, date, isPaid, price, adminId } = req.body;
-
-    if (isPaid && !price) {
-      return res.status(400).json({ error: 'Price is required for paid events' });
-    }
-
     
-    let imageUrl = null;
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'events',  
-        resource_type: 'image',
-      });
-      imageUrl = result.secure_url;  
+    // Validate required fields
+    if (!title || !description || !date || !adminId) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
-
-     
+    
+    // Validate price if event is paid
+    if (isPaid && (price === undefined || price <= 0)) {
+      return res.status(400).json({ error: 'Paid events must have a valid price greater than 0' });
+    }
+    
+    // Validate the image is provided
+    if (!req.file) {
+      return res.status(400).json({ error: 'Featured image is required' });
+    }
+    
+    // Upload image to Cloudinary
+    const featuredImage = await uploadImage(req.file.path);
+    
+    // Create the event
     const event = await prisma.event.create({
       data: {
         title,
         description,
-        featuredImage: imageUrl,
-        date,
-        isPaid,
-        price: isPaid ? price : null,
-        adminId,
-      },
+        featuredImage,
+        date: new Date(date),
+        isPaid: isPaid || false,
+        price: isPaid ? parseFloat(price) : null,
+        adminId
+      }
     });
-
+    
     res.status(201).json(event);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `Failed to create event: ${error.message}` });
   }
 };
 
- 
-export const registerForEvent = async (req, res) => {
+// Update an event
+exports.updateEvent = async (req, res) => {
   try {
-    const { eventId, userId } = req.body;
-
-    const event = await prisma.event.findUnique({ where: { id: eventId } });
-
-    if (!event) {
+    const { title, description, date, isPaid, price } = req.body;
+    const eventId = req.params.id;
+    
+    // Check if event exists
+    const existingEvent = await prisma.event.findUnique({
+      where: {
+        id: eventId
+      }
+    });
+    
+    if (!existingEvent) {
       return res.status(404).json({ error: 'Event not found' });
     }
-
-    if (event.isPaid) {
-      const payment = await razorpay.orders.create({
-        amount: event.price * 100,  
-        currency: 'INR',
-        receipt: `receipt_${eventId}_${userId}`,
-      });
-
-      return res.status(200).json({ payment, message: 'Payment required to register' });
+    
+    // Validate price if event is paid
+    if (isPaid && (price === undefined || price <= 0)) {
+      return res.status(400).json({ error: 'Paid events must have a valid price greater than 0' });
     }
-
-     
-    await prisma.registration.create({
-      data: { eventId, userId },
+    
+    // Prepare update data
+    const updateData = {
+      title: title || existingEvent.title,
+      description: description || existingEvent.description,
+      date: date ? new Date(date) : existingEvent.date,
+      isPaid: isPaid !== undefined ? isPaid : existingEvent.isPaid,
+      price: isPaid ? parseFloat(price) : null,
+      updatedAt: new Date()
+    };
+    
+    // Handle image update if provided
+    if (req.file) {
+      updateData.featuredImage = await uploadImage(req.file.path);
+    }
+    
+    // Update the event
+    const updatedEvent = await prisma.event.update({
+      where: {
+        id: eventId
+      },
+      data: updateData
     });
-
-    res.status(200).json({ message: 'Registered successfully' });
+    
+    res.status(200).json(updatedEvent);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `Failed to update event: ${error.message}` });
+  }
+};
+
+// Delete an event
+exports.deleteEvent = async (req, res) => {
+  try {
+    const eventId = req.params.id;
+    
+    // Check if event exists
+    const existingEvent = await prisma.event.findUnique({
+      where: {
+        id: eventId
+      }
+    });
+    
+    if (!existingEvent) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    
+    // Delete the event
+    await prisma.event.delete({
+      where: {
+        id: eventId
+      }
+    });
+    
+    res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: `Failed to delete event: ${error.message}` });
   }
 };
