@@ -126,9 +126,9 @@ export default function Home() {
           <h1 className="font-bold text-center text-5xl mt-10 mb-14">Find your Mentors</h1>
           <div>
             <div className="flex gap-6">
-              <Input type="search" placeholder="Search Alumni" />
+              <Input type="search" placeholder="Search Alumni" className="bg-background p-4 text-xl" />
               <Select>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[280px] bg-background">
                   <SelectValue placeholder="Company" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +142,7 @@ export default function Home() {
                 </SelectContent>
               </Select>
               <Select>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[280px] bg-background">
                   <SelectValue placeholder="Skills" />
                 </SelectTrigger>
                 <SelectContent>
@@ -197,7 +197,7 @@ export default function Home() {
       </section>
 
       {/* Jobs Section */}
-      <section id="jobs" className="px-6 py-24 bg-secondary">
+      <section id="jobs" className="px-6 py-24 bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-8">
@@ -244,7 +244,7 @@ export default function Home() {
       {/* Upcoming Events */}
       <section id="search-alumni" className="mb-20">
         <Container>
-          <h1 className="font-bold text-center text-5xl mt-10 mb-14">Upcoming Events</h1>
+          <h1 className="font-bold text-center text-5xl mt-16 mb-14">Upcoming Events</h1>
           <div>
             {/* Events Card */}
             <div className="grid grid-cols-2 gap-x-10 gap-y-6 my-6">
@@ -278,7 +278,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="px-6 py-24 bg-white">
+      <section id="testimonials" className="px-2 bg-white">
         <Testimonials />
       </section>
 
