@@ -30,45 +30,46 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import Image from "next/image"
+import { NavUser } from "./nav-user"
 
 const data = {
   navMain: [
     {
       title: "Home",
-      url: "#",
+      url: "/dashboard",
       icon: Home,
       isActive: true,
     },
     {
       title: "Jobs",
-      url: "#",
+      url: "/jobs",
       icon: Search,
     },
     {
       title: "Events",
-      url: "#",
+      url: "/events",
       icon: Calendar,
       badge: "10",
     },
     {
       title: "Connections",
-      url: "#",
+      url: "/connections",
       icon: Users,
     },
     {
       title: "Live Sessions",
-      url: "#",
+      url: "/live-session",
       icon: Video,
     },
     {
       title: "Forums",
-      url: "#",
+      url: "forums",
       icon: MessageCircle,
     },
     {
-      title: "Opportunities",
-      url: "#",
-      icon: Briefcase,
+      title: "Inbox",
+      url: "/chat",
+      icon: Search,
     },
   ],
   navSecondary: [
@@ -88,6 +89,11 @@ const data = {
       icon: MessageCircleQuestion,
     },
   ],
+  user: {
+    name: "Username",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
 }
 
 export function SidebarLeft({
@@ -106,6 +112,7 @@ export function SidebarLeft({
       </SidebarContent>
       <SidebarFooter>
         <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
