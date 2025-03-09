@@ -47,8 +47,7 @@ model Student {
   posts          Post[]
   forums         Forum[]
   comments       Comment[]
-  sentChats      Chat[]       @relation("StudentSenderChats")
-  receivedChats  Chat[]       @relation("StudentReceiverChats")
+ 
   experiences    Experience[]
 }
 
@@ -77,8 +76,7 @@ model Alumni {
   forums         Forum[]
   jobs            Job[]
   comments        Comment[]
-  sentChats       Chat[]       @relation("AlumniSenderChats")
-  receivedChats   Chat[]       @relation("AlumniReceiverChats")
+   
   experiences     Experience[]
 }
 
@@ -188,32 +186,20 @@ model Comment {
   admin       Admin?   @relation(fields: [adminId], references: [id])
 }
 
-model Chat {
-  id                  String   @id @default(uuid())
-  message             String   // Encrypted message
-  createdAt           DateTime @default(now())
-
-  senderStudentId     String?   
-  receiverAlumniId    String?  
-  senderAlumniId      String?   
-  receiverStudentId   String?  
-
-  senderStudent       Student? @relation("StudentSenderChats", fields: [senderStudentId], references: [id])
-  receiverAlumni      Alumni?  @relation("AlumniReceiverChats", fields: [receiverAlumniId], references: [id])
-  senderAlumni        Alumni?  @relation("AlumniSenderChats", fields: [senderAlumniId], references: [id])
-  receiverStudent     Student? @relation("StudentReceiverChats", fields: [receiverStudentId], references: [id])
-}
+ 
 
 model StudentData {
-  id             String   @id @default(uuid())
-  fullName       String
+  prn_number     String @id @default(uuid())
+  fullName       String 
+  branch         String @default("Unknown") 
   graduationYear Int
-  prn_number     String
+   
 }
 
 model AlumniData {
-  id             String   @id @default(uuid())
-  fullName       String
+      
+  fullName       String @id @default(uuid())
+  branch         String @default("Unknown")
   graduationYear Int
 }
 
