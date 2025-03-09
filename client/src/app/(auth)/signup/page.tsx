@@ -39,32 +39,32 @@ export default function SignupPage() {
     e.preventDefault();
 
     try {
-      const userData = {
-        username: formData.username || formData.email.split("@")[0],
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.fullName,
-        userType,
-        branch: formData.branch,
-        ...(userType === "student"
-          ? { prn_number: formData.prn_number }
-          : { graduationYear: formData.graduationYear }),
-      };
+        const userData = {
+            username: formData.username || formData.email.split("@")[0],
+            email: formData.email,
+            password: formData.password,
+            fullName: formData.fullName,
+            userType,
+            branch: formData.branch,
+            ...(userType === "student"
+                ? { prn_number: formData.prn_number }
+                : { graduationYear: formData.graduationYear }),
+        };
 
-      const res = await axios.post(
-        "http://localhost:4000/api/user/register-user",
-        userData
-      );
+        const res = await axios.post(
+            "http://localhost:4000/api/user/register-user",
+            userData
+        );
 
-      localStorage.setItem("token", res.data.token);
-      toast.dark("User created successfully!");
-      router.push(`/onboarding/${userType}`);
+        localStorage.setItem("token", res.data.token);
+        toast.dark("User created successfully!");
+        router.push(`/onboarding/${userType}`);
     } catch (error) {
-      setError("Registration failed");
-      toast.error("Data not updated by admin yet");
+        console.error("Signup error:", error.response?.data || error.message);
+        setError("Registration failed");
+        toast.error("Data not updated by admin yet");
     }
-  };
-
+};
   return (
     <div className="w-full max-w-[25rem]">
       <div className="space-y-1 mb-4">
